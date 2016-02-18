@@ -1,0 +1,119 @@
+api::
+
+1. Login: 
+POST TO /Login
+SEND:
+	UserName:postnikov
+	Password:dogpile
+	ActiveProjectId:-1
+	LoginAuxData:ver:1.14:logout
+RESPONSE:
+{
+  "firstName": "Alex",
+  "lastName": "Pas",
+  "email": null,
+  "screenshotInterval": 5,
+  "reminderInterval": 2,
+  "disableScreenCapture": false,
+  "denySelfAssignedTasks": false,
+  "disableInactivityReminder": false,
+  "userName": "Alex Pas",
+  "guid": "fc18e0ea-008b-420d-bd03-df1c780fee79",
+  "version": 7,
+  "companyName": "Coding",
+  "ProjectDataSet": [
+    {
+      "projectId": 21714,
+      "projectName": "Default Project",
+      "completedTasks": [],
+      "openTasks": [
+        {
+          "taskId": 78949,
+          "taskName": "ntt",
+          "canMarkComplete": false,
+          "canArchive": false
+        }
+      ]
+    }
+  ],
+  "activeProject": {
+    "projectId": 21714,
+    "projectName": "Default Project",
+    "completedTasks": [],
+    "openTasks": [
+      {
+        "taskId": 78949,
+        "taskName": "ntt",
+        "canMarkComplete": false,
+        "canArchive": false
+      }
+    ]
+  },
+  "ServerTimeUTC": "2016-01-29T10:29:16.1480694Z"
+}
+
+
+2. CreateTask
+POST TO /CreateTask
+SEND:
+	UserName:postnikov
+	Password:dogpile
+	ActiveProjectId:-1
+	TaskTitle:new task name
+	ProjectId:21714
+
+RECEIVE:
+79215
+
+3. MarkTaskCompleted
+POST TO /MarkTaskCompleted
+SEND:
+	UserName:postnikov
+	Password:dogpile
+	ActiveProjectId:-1
+	TaskId:79215
+	ProjectId:21714
+
+RESPONSE:
+	"Task successfully marked complete"
+
+4. LogData
+POST TO /LogData
+	guid:141a7945-2c57-4626-944e-906068444175
+	taskId:78949
+	isScreenshot:true
+	forceWorkingStatus:false
+	isStartLog:true
+	inactivityAlert:false
+	keyCount:0
+	mouseCount:0
+	windowTitle:chromeClient
+	image:img
+	auxData:chromeClient
+
+
+	guid:81c4b28d-bc16-4978-8bb3-0a6ef79d8e0c
+	taskId:78949
+	isScreenshot:true
+	forceWorkingStatus:false
+	isStartLog:false
+	inactivityAlert:false
+	keyCount:0
+	mouseCount:0
+	windowTitle:chromeClient
+	image:img
+	auxData:chromeClient
+
+RESPONSE:
+- next session is got from prev session id
+
+{"sessionGuid":"2c1ebb65-1f14-4210-a160-7f4c2b18814d","signedUrl":null,"signedUrlthumb":null}
+
+
+{"sessionGuid":"187a24eb-200e-42f3-a1fb-0667d9c79c34","signedUrl":"https://screenmetershots.s3-us-west-2.amazonaws.com/screen2016_1_29_187a24eb200e42f3a1fb0667d9c79c34screen.jpg?AWSAccessKeyId=AKIAJUWLD6BGZDPT6GZA&Expires=1454064532&Signature=CPN2VY8BMqH9yvc0g0eYvXb000Q%3D","signedUrlthumb":"https://screenmetershots.s3-us-west-2.amazonaws.com/screen2016_1_29_187a24eb200e42f3a1fb0667d9c79c34thumb.jpg?AWSAccessKeyId=AKIAJUWLD6BGZDPT6GZA&Expires=1454064532&Signature=vFzTUoDEujdBCW4Qa0uOtAVw6kI%3D"}
+
+
+5. Put image
+To signedUrl /  signedUrlthumb
+
+Request - PUT

@@ -1,0 +1,166 @@
+<html>
+<head>
+<link href="bootstrap.css" rel="stylesheet"/>
+<link href="bootstrap-custom.css" rel="stylesheet"/>
+<link href="Site.css" rel="stylesheet"/>
+<link href="app.css" rel="stylesheet"/>
+<link rel="stylesheet" href="ladda-themeless.min.css">
+
+</head>
+<body>
+<script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="bootstrap.min.js"></script>
+<script type="text/javascript" src="app.js"></script>
+<script src="spin.min.js"></script>
+<script src="ladda.min.js"></script>
+<div class="container" id="layout-div">
+  <div class="row">
+    <div class="col-md-12 text-center">
+    <h2 style="margin-top:0px;">CodingNinjas: Employee Monitoring Service</h2>
+
+    <hr>
+      <div id="mainDiv" style="display:none;">
+      <!--div class="row text-center">
+     <div class="col-xs-6">
+       <label class="control-label col-md-12" >Last 16 Hours</label>
+       <h1 id='DayHoursMinutes'>10h 12m</h1>
+     </div>
+
+     <div class="col-xs-6">
+       <label class="control-label col-md-12" >Last 7 Days</label>
+       <h1 id='WeekHoursMinutes'>12h 13m</h1>
+     </div>
+   </div-->
+      <canvas id="last-screenshot" width="300" height="192" style="display:none; background-image:url(icon.png); background-position:center; background-repeat:no-repeat;" ></canvas>
+
+
+    <div class="row text-center">
+      <h4>Logged in as <span id='loggedInAs'></span></h2>
+        <a id="signOutLink" style="display:block; cursor: pointer;" >Sign out (Removes stored password)</a>
+        <br/>
+        <a id="minimizeLink" style="display: block;cursor: pointer;">Minimize this Window</a>
+
+    </div>
+        <!--<div class="row">
+          <div class="form-group text-left">
+            <label class="control-label col-md-12" for="activityList">Project</label>
+            <div class="col-md-12">
+              <select  class="col-md-12 form-control" id="projectList" >
+              </select>
+            </div>
+          </div>
+        </div>-->
+        <div class="row">
+          <div class="form-group text-left">
+            <label class="control-label col-md-12" for="activityList">Task</label>
+            <div class="col-md-12">
+              <select  class="col-md-12 form-control" id="activityList" >
+              </select>
+            </div>
+          </div>
+          <!--<a id="markCompleteLink" style="cursor: pointer; color:green;" ><img src="tick.png"/><span id='markCompleteText'>Mark Complete</span></a>-->
+
+        </div>
+          <div class="row">
+        <div class="form-group">
+          <label class="col-md-12 control-label text-center" for="loginButton">&nbsp;</label>
+          <div class="col-md-6 col-md-offset-3">
+            <input class="col-md-12 btn btn-block btn-success" id="toggleButton" type="button" value="Start" />
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div id="statusdiv" class="text-center col-md-6 col-md-offset-3">
+            <p>Status</p>
+            <h3 id="statuslabel" class="stopped">Stopped</h3>
+          </div>
+        </div>
+        <div class="container">
+          <video id="video"  autoplay></video>
+          <canvas  id="screenshot" ></canvas>
+        </div>
+      </div>
+      <div id="loginDiv">
+      <div class="row text-center">
+      <img src="icon.png" style="margin-bottom:30px;" alt="CodingNinjas-icon" />
+      </div>
+        <div class="form-group">
+          <label class="col-md-12 control-label text-center" for="password">Username</label>
+          <div class="col-md-6 col-md-offset-3">
+            <input id="username" class="form-control" type="text" value="" name="UserName" >
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-12 control-label text-center" for="password">Password</label>
+          <div class="col-md-6 col-md-offset-3">
+            <input id="password" class="form-control" type="password" value="" name="UserName">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-12 control-label text-center" for="loginButton">&nbsp;</label>
+          <div class="col-md-6 col-md-offset-3">
+          <a href="#" id="loginButton" class="btn btn-primary  ladda-button" data-style="zoom-out" data-size="l"><span class="ladda-label">Sign In</span></a>
+          <br/><br/>
+          <a href="https://www.CodingNinjas.com/Account/Register" target="_blank" >Register (Employers Only)</a>
+          <p>Employee registration only by invitation</p>
+
+
+          </div>
+
+
+        </div>
+        <div class="form-group">
+          <label class="col-md-12 control-label text-center warning" id="messageLabel" ></label>
+
+        </div>
+      </div>
+    </div>
+    <div class="row"> </div>
+  </div>
+</div>
+</div>
+<div id="log" class="col-md-12"></div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div id="modal-holder" class="modal-content col-md-8 col-md-offset-2">
+
+                <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+        <h4 class="modal-title" id="myModalLabel">What are you working on ?</h4>
+    </div>
+    <div class="modal-body ">
+
+
+         <div class="form-group">
+          <label class="col-md-12 control-label text-center" for="newTaskTitle">New Task Title</label>
+          <div class="col-md-6 col-md-offset-3">
+            <input id="newTaskTitle" class="form-control" type="text" value="" name="UserName" >
+          </div>
+        </div>
+         <div class="form-group">
+          <label class="col-md-12 control-label text-center warning" id="taskMessageLabel" for="password"></label>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <div class="col-md-12"> <a href="#" id="newTaskButton" class="btn btn-primary  ladda-button" data-style="zoom-out" data-size="l"><span class="ladda-label">Save</span></a>
+   </div>
+
+
+
+    </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</body>
+</html>

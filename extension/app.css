@@ -1,0 +1,42 @@
+#layout-div
+{
+	
+	
+}
+
+#statuslabel
+{
+	margin:5px;
+}
+
+#messageLabel
+{
+	color:red;
+}
+
+  #video, #screenshot {
+    position:absolute;
+	left:0px;
+	top:800px;
+    background: rgba(0,0,0,0.25);
+  }
+
+#statusdiv
+{
+	margin: 0px 30px;
+	padding:5px;
+	border-radius:75px;
+	border: none;
+	text-align:center;
+	background-color:red;
+	color:white;
+	transition:all;
+	transition-duration:0.5s;
+}
+
+#statusdiv.started
+{
+	background-color:green;
+	transition:all;
+	transition-duration:0.5s;
+}
