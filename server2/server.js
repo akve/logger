@@ -2,7 +2,7 @@
  * Module dependencies
 */
 var express  = require('express');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var http = require('http');
@@ -18,9 +18,9 @@ var ip     = process.env.IP || "localhost";
 
 var app = express();
 
-var connection = require('./config/database')(mongoose);
-var models = require('./models/models')(connection);
-require('./config/passport')(passport,models); // pass passport for configuration
+//var connection = require('./config/database')(mongoose);
+//var models = require('./models/models')(connection);
+//require('./config/passport')(passport,models); // pass passport for configuration
 
 
 app.configure(function() {
@@ -51,7 +51,7 @@ app.configure(function() {
     //app.use(flash()); // use connect-flash for flash messages stored in session
 
     //passport configuration
-    app.use(passport.initialize());
+    //app.use(passport.initialize());
     //app.use(passport.session());// persistent login sessions
     //provagg
     app.use(cors());
@@ -59,7 +59,7 @@ app.configure(function() {
 
 });
 
-require('./app/routes.js')(app, passport,models); // load our routes and pass in our app and fully configured passport
+require('./app/routes.js')(app, passport); //models // load our routes and pass in our app and fully configured passport
 
 // development only
 if (app.get('env') === 'development') {

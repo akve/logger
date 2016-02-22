@@ -381,14 +381,43 @@ function processRequest(retCount)
             var dat = photo.toDataURL("image/jpeg");
             var dat1b = dataURItoBlob(dat);
 
+            var dataJson = {"image":dat1b};
+
             console.log("Sending Main Image");
-            $.ajax({
+            $.post(data.signedUrl, dataJson).done(function(json){
+                imageFailCount = 0;
+
+
+                var dat2 = lastScreenshot.toDataURL("image/jpeg");
+                var dat2b = dataURItoBlob(dat2);
+
+                dataJson = {image:dat2b};
+
+                console.log("Sending thumb");
+                $.post(data.signedUrlthumb, dataJson).done(function(json2){
+                    imageFailCount = 0;
+                }).fail(function (data2) {
+                    console.log(json2);
+
+                    imageFailCount++;
+                    checkNetConnection();
+                    console.log("Image Fail Count " + imageFailCount);
+                });
+
+
+            }).fail(function (data) {
+                console.log(json);
+                imageFailCount++;
+                console.log("Image Fail Count " + imageFailCount);
+            });
+
+            /*$.ajax({
                 processData: false,
                 url: data.signedUrl,
                 timeout: 240000,
-                contentType: "binary/octet-stream",
-                type: "PUT",
-                data: dat1b,
+                //contentType: "binary/octet-stream",
+                type: "POST",
+                data: dataJson,
 
                 success: function (json) {
                     imageFailCount = 0;
@@ -400,21 +429,18 @@ function processRequest(retCount)
                     console.log("Image Fail Count " + imageFailCount);
 
                 }
-            });
-
-            var dat2 = lastScreenshot.toDataURL("image/jpeg");
-            var dat2b = dataURItoBlob(dat2);
+            });*/
 
 
-            console.log("Sending thumb");
-            $.ajax({
+
+            /*$.ajax({
 
                 processData: false,
                 url: data.signedUrlthumb,
                 timeout: 240000,
-                contentType: "binary/octet-stream",
-                type: "PUT",
-                data: dat2b,
+                //contentType: "binary/octet-stream",
+                type: "POST",
+                data: dataJson,
 
                 success: function (json) {
                     imageFailCount = 0;
@@ -431,7 +457,7 @@ function processRequest(retCount)
 
 
                 }
-            });
+            });*/
         }
         if (imageFailCount > 12) {
             imageFailCount = 0;
@@ -472,6 +498,9 @@ function processRequest(retCount)
 }
 
 function dataURItoBlob(dataURI) {
+    // lets try in a usual way
+    return dataURI;// dataURI.split(',')[1];
+
     var byteString = atob(dataURI.split(',')[1]);
     var ab = new ArrayBuffer(byteString.length);
     var ia = new Uint8Array(ab);

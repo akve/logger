@@ -6,6 +6,8 @@ module.exports = function() {
 
     mod.wphost = "http://local.wordpress.dev";
 
+    mod.baseUrl = "http://localhost:3000"
+
     mod.getAuthHeader = function(params) {
         return {'Authorization' : 'Basic '  +  new Buffer( params.username + ':' + params.password ).toString('base64')};
     }
@@ -34,6 +36,10 @@ module.exports = function() {
         request(options, function(err, response, body) {
             //console.log("RESP", err, response, body);
             //console.log("BODY", body);
+            if (err) {
+                callback(err);
+                return;
+            }
             callback(JSON.parse(body));
         });
     }
@@ -47,6 +53,10 @@ module.exports = function() {
         request(options, function(err, response, body) {
             //console.log("RESP", err, response, body);
             //console.log("BODY", body);
+            if (err) {
+                callback(err);
+                return;
+            }
             callback(JSON.parse(body));
         });
     }
