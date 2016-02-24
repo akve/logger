@@ -6,6 +6,25 @@ module.exports = function(app, passport,models) {
         res.render('index');
     });
 
+
+    app.get('/partials/:name', showClientRequest, function (req, res) {
+        var name = req.params.name;
+        console.log("!");
+        res.render('partials/' + name);
+    });
+
+    app.get('/partials/auth/:name', showClientRequest, function (req, res) {
+        var name = req.params.name;
+        console.log("!");
+        res.render('partials/auth/' + name);
+    });
+
+    app.get('/api/people', showClientRequest, api.people);
+    app.get('/api/tasks/:id', showClientRequest, api.tasks);
+    app.get('/api/shots/:session', showClientRequest, api.shots);
+
+    app.get('/api/shot', showClientRequest, api.shot);
+
     app.get('/api/Login', showClientRequest, api.extLogin);
 
     app.get('/api/check', showClientRequest, api.extCheck);

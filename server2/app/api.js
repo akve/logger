@@ -1,4 +1,5 @@
 var path = require('path');
+var request = require('request');
 var fs = require('fs');
 
 var apiconn = require('../config/apiconnection')();
@@ -37,6 +38,61 @@ module.exports = function(models){
     }
 
     return {
+
+        people: function(req,res,next) {
+            mysql.query("select user_id from logs group by user_id", function(err, rows){
+                res.json({"result":rows});
+                //next();
+            })
+        },
+        tasks: function(req,res,next) {
+            var sql = "from logs where user_id = " + req.params.id + " and start_at > '" + req.query.from + "' and start_at < '" + req.query.to + "'";
+            if (req.query.agg == "true"){
+                sql = "select task_id, sum(duration) duration " + sql + " group by task_id";
+            } else {
+                sql = "select * " + sql;
+            }
+            console.log(sql);
+            mysql.query(sql, function(err, rows){
+                res.json({"result":rows});
+                //next();
+            })
+        },
+        shots: function(req,res,next) {
+            mysql.query("select * from shots where session_id='"+req.params.session+"'", function(err, rows){
+                rows.forEach(function(row){
+                    row.path = row.path.replace(path.join(__dirname, ".."), "");
+                    row.thumb_path = row.thumb_path.replace(path.join(__dirname, ".."), "");
+                })
+                res.json({"result":rows});
+                //next();
+            })
+        },
+
+        shot: function(req, res, next) {
+            var p = req.query.path;
+            var imgPath = path.join(__dirname, "..", p);
+            console.log(imgPath);
+            if (!fs.existsSync(imgPath)) {
+                res.status(404).header('content-type', 'text/html').send("No such file");
+                return;
+            }
+            fs.readFile(imgPath, function (err, content) {
+                if (err) {
+                    res.writeHead(400, {'Content-type':'text/html'})
+                    console.log(err);
+                    res.end("No such image");
+                } else {
+                    //specify the content type in the response will be an image
+                    res.writeHead(200,{'Content-type':'image/jpg'});
+                    res.end(content);
+                }
+            });
+            //fs.createReadStream(imgPath).pipe(res);
+            //res.sendFile(imgPath);
+
+        },
+
         extLogin: function(req, res, next) {
             auth(req, res, function(userData){
                 var result = {

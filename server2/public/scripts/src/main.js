@@ -11,7 +11,10 @@ require.config({
         'angularToastr': 'lib/angular-toastr/dist/angular-toastr.tpls.min',
         'cryptojslib' : 'lib/cryptojslib/rollups/pbkdf2',
         'jquery' : 'lib/jquery/dist/jquery.min',
-        'bootstrap' : 'lib/bootstrap/dist/js/bootstrap.min'
+        'bootstrap' : 'lib/bootstrap/dist/js/bootstrap.min',
+        'ui': 'lib/ui/ui-bootstrap-tpls-1.1.2',
+        'moment':'lib/moment/moment',
+        'bootstrapLightbox':'lib/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox'
     },
     shim: {
         'angular': {

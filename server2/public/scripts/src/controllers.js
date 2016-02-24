@@ -6,8 +6,8 @@ define(['angular'], function (angular) {
     mainAppControllers.controller('LoginCtrl', ['$location', 'ResourceService' ,'CryptoJSService', 'localStorageService', 'toastr' ,LoginCtrl]);
     mainAppControllers.controller('RegistrationCtrl', ['ResourceService', 'CryptoJSService', 'toastr', RegistrationCtrl]);
     mainAppControllers.controller('HomeCtrl', ['ResourceService', 'data', 'toastr', HomeCtrl]);
-    mainAppControllers.controller('PersonCtrl', ['ResourceService', 'toastr', PersonCtrl]);
-    mainAppControllers.controller('ThingCtrl', ['ResourceService', 'toastr', ThingCtrl]);
+    mainAppControllers.controller('PersonCtrl', ['ResourceService', 'toastr', '$location', PersonCtrl]);
+    mainAppControllers.controller('ThingCtrl', ['ResourceService', 'toastr', '$location', 'Lightbox', ThingCtrl]);
     mainAppControllers.controller('ProvaCtrl', [ProvaCtrl]);
 
     function ProvaCtrl() {
@@ -120,9 +120,9 @@ define(['angular'], function (angular) {
         vm.ResourceService = ResourceService;
         vm.data = data;
         vm.toastr = toastr;
-
-        vm.people = data[0].people;
-        vm.things = data[1].things;
+        console.log("DATA", data);
+        vm.people = data[0].result;
+        //vm.things = data[1].things;
     }
 
     HomeCtrl.prototype.updatePerson = function(index, modify)
@@ -194,51 +194,66 @@ define(['angular'], function (angular) {
         });
     };
 
-    function PersonCtrl(ResourceService, toastr) {
+    function PersonCtrl(ResourceService, toastr, $location) {
         var vm = this;
         vm.person = null;
         vm.ResourceService = ResourceService;
         vm.toastr = toastr;
+        vm.dateFrom = new Date(new Date().getTime() - 86400 * 1000 * 7);
+        vm.popupFrom = {opened:false};
+        vm.dateTo = new Date(new Date().getTime() + 86400 * 1000);
+        vm.popupTo = {opened:false};
+        vm.altInputFormats = ['M!/d!/yyyy'];
+        vm.userId = $location.url().split("/")[2];
+
+        vm.tasks = [];
+        vm.aggregate = false;
+
+        vm.openFrom = function(){
+            vm.popupFrom.opened = true;
+        }
+
+        vm.openTo = function(){
+            vm.popupTo.opened = true;
+        }
+
+        vm.search = function() {
+            vm.ResourceService.getTasks(vm.userId, vm.dateFrom, vm.dateTo, vm.aggregate).then(function(data){
+                vm.tasks = data.result;
+            });
+        }
+
+        vm.search();
+
     }
 
-    PersonCtrl.prototype.createPerson = function()
-    {
-        var vm = this;
-        var person = {person: vm.person};
-
-        vm.ResourceService.createPerson(person).then(function(data){
-            vm.person = null;
-            vm.toastr.success(data.message);
-        },function(data, status) {
-            if(status!==401){
-                vm.toastr.error(data);
-            }
-        });
-    };
-
-
-    function ThingCtrl(ResourceService, toastr)
+    function ThingCtrl(ResourceService, toastr, $location, Lightbox)
     {
         var vm = this;
         vm.thing = null;
         vm.ResourceService = ResourceService;
         vm.toastr = toastr;
+
+        vm.session = $location.url().split("/")[2];
+        vm.shots = [];
+
+        vm.search = function() {
+            vm.ResourceService.getShots(vm.session).then(function(data){
+                vm.shots = data.result;
+                vm.shots.forEach(function(i){
+                    i.url = "api/shot?path=" + i.path;
+                    i.thumbUrl = "api/shot?path=" + i.thumb_path;
+                    i.caption = i.shot_at;
+                })
+            });
+        }
+        vm.openLightboxModal = function (index) {
+            Lightbox.openModal(vm.shots, index);
+        };
+
+        vm.search();
     }
 
-    ThingCtrl.prototype.createThing = function()
-    {
-        var vm = this;
-        var thing = {thing: vm.thing};
-
-        vm.ResourceService.createThing(thing).then(function(data){
-            vm.thing = null;
-            vm.toastr.success(data.message);
-        },function(data, status) {
-            if(status!==401){
-                vm.toastr.error(data);
-            }
-        });
-    };
 
     return mainAppControllers;
 

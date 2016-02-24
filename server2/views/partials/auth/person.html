@@ -14,18 +14,51 @@
 
                     <div class="col-md-10 col-md-offset-1">
 
-                        <form ng-submit="vm.createPerson()" role="form" class="form-inline">
+                        <form ng-submit="vm.search()" role="form" class="form-inline">
                             <fieldset>
-                                <legend>Add new Person</legend>
+                                <legend>Tasks in the period</legend>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" ng-model="vm.person.name" placeholder="Type name of person..." required>
+                                    From:
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" is-open="vm.popupFrom.opened" ng-model="vm.dateFrom"  ng-required="true" close-text="Close" alt-input-formats="vm.altInputFormats" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="vm.openFrom()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                    To:
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" is-open="vm.popupTo.opened" ng-model="vm.dateTo"  ng-required="true" close-text="Close" alt-input-formats="vm.altInputFormats" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="vm.openTo()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                    <label><input type="checkbox" ng-model="vm.aggregate">Aggregate totals</label>
                                 </div>
-                                <div class="form-group">
-                                    <input type="number" class="form-control" ng-model="vm.person.age" placeholder="Tpe age of person..." required>
-                                </div>
-                                <input type="submit" class="btn btn-primary" value="Add"/>
+                                <input type="button" ng-click="vm.search()" class="btn btn-primary" value="Search"/>
                             </fieldset>
                         </form>
+
+                        <table class="table" ng-if="vm.aggregate">
+                            <th>Task</th>
+                            <th>Time worked</th>
+                            <tr ng-repeat="task in vm.tasks">
+                                <td>{{task.task_id}}</td>
+                                <td>{{task.duration}}</td>
+                            </tr>
+                        </table>
+
+                        <table class="table" ng-if="!vm.aggregate">
+                            <th>Task</th>
+                            <th>Started</th>
+                            <th>Finished</th>
+                            <th>Time worked</th>
+                            <tr ng-repeat="task in vm.tasks">
+                                <td>{{task.task_id}}</td>
+                                <td><a href="#/shots/{{task.session_id}}">{{task.start_at  | formatDate}}</a></td>
+                                <td>{{task.end_at | formatDate}}</td>
+                                <td>{{task.duration}}</td>
+                            </tr>
+                        </table>
 
                     </div>
 

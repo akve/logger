@@ -2,30 +2,34 @@
 <div ng-include src="'partials/header.html'"></div>
 
 <div class="container-fluid">
-
+<style>
+    div.image {
+        text-align: center;
+        float: left;
+        width: 140px;
+        padding: 3px;
+    }
+    div.image img {
+        width:130px;
+    }
+</style>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
             <div class="panel panel-info">
                 <!-- Default panel contents -->
-                <div class="panel-heading">Thing</div>
+                <div class="panel-heading">Screenshots</div>
 
                 <div class="row">
 
                     <div class="col-md-10 col-md-offset-1">
 
-                        <form ng-submit="vm.createThing()" role="form" class="form-inline">
-                            <fieldset>
-                                <legend>Create new Thing</legend>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" ng-model="vm.thing.name" placeholder="Type name of thing..." required>
-                                </div>
-                                <div class="form-group">
-                                    <input type="number" class="form-control" ng-model="vm.thing.size" placeholder="Tpe size of thing..." required>
-                                </div>
-                                <input type="submit" class="btn btn-primary" value="Create"/>
-                            </fieldset>
-                        </form>
+                        <div ng-repeat="shot in vm.shots" class="image">
+                            <a ng-click="vm.openLightboxModal($index)">
+                                <img src="{{shot.thumbUrl}}" class="img-thumbnail">
+                                <br>
+                                {{shot.shot_at | formatDate}}</a>
+                        </div>
 
                     </div>
 

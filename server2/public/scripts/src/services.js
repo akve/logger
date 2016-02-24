@@ -51,8 +51,11 @@ define(['angular'], function (angular) {
             getPeople : function(refresh){
                 return _promisesGetter('GET','/api/people', null, "people", refresh);
             },
-            getThings : function(refresh){
-                return _promisesGetter('GET','/api/things', null, "things", refresh);
+            getTasks : function(user, dtFrom, dtTo, aggregate, refresh){
+                return _promisesGetter('GET','/api/tasks/'+user+"?from="+moment(dtFrom).format("YYYY-MM-DD")+"&to="+moment(dtTo).format("YYYY-MM-DD")+"&agg="+aggregate, null, "tasks", refresh);
+            },
+            getShots : function(session, refresh){
+                return _promisesGetter('GET','/api/shots/'+session, null, "shots", refresh);
             },
             createThing : function(thing){
                 return _ajaxRequest('POST', '/api/thing', thing, null);

@@ -7,7 +7,10 @@ define([
     'angularToastr',
     'cryptojslib',
     'controllers',
-    'services'
+    'services',
+    'ui',
+    'moment',
+    'bootstrapLightbox'
 
 ], function (angular) {
     'use strict';
@@ -18,7 +21,10 @@ define([
         'LocalStorageModule',
         'toastr',
         'myAppServices',
-        'mainAppControllers'
+        'mainAppControllers',
+        'ui.bootstrap',
+        'bootstrapLightbox'
+
     ]);
 
 
@@ -82,25 +88,25 @@ define([
                     controllerAs: 'vm',
                     resolve: {
                         data : function(Resolver,ResourceService){
-                            return Resolver([ResourceService.getPeople(true),ResourceService.getThings(true)])
+                            return Resolver([ResourceService.getPeople(true)])
                         }
                     },
                     access: { requiredLogin: true }
                 }).
-                when('/person', {
+                when('/person/:id', {
                     templateUrl: 'partials/auth/person',
                     controller: 'PersonCtrl',
                     controllerAs: 'vm',
                     access: { requiredLogin: true }
                 }).
-                when('/thing', {
+                when('/shots/:id', {
                     templateUrl: 'partials/auth/thing',
                     controller: 'ThingCtrl',
                     controllerAs: 'vm',
                     access: { requiredLogin: true }
                 }).
                 otherwise({
-                    redirectTo: '/login'
+                    redirectTo: '/home' // login
                 });
         }
 
@@ -109,16 +115,46 @@ define([
 
     mainApp.run(['$rootScope','$location','AuthenticationService',function($rootScope, $location, AuthenticationService) {
         $rootScope.$on("$routeChangeStart", function(event, nextRoute, currentRoute) {
-
+            /*
             if (nextRoute.access===undefined) {
                 $location.path("/login");
             }else if (nextRoute.access.requiredLogin && !AuthenticationService.isLogged()) {
                 $location.path("/login");
             }else if (AuthenticationService.isLogged() && !nextRoute.access.requiredLogin) {
                 $location.path("/home");
-            }
+            }*/
         });
     }]);
+
+    mainApp.filter('cut', function () {
+        return function (value, wordwise, max, tail) {
+            if (!value) return '';
+
+            max = parseInt(max, 10);
+            if (!max) return value;
+            if (value.length <= max) return value;
+
+            value = value.substr(0, max);
+            if (wordwise) {
+                var lastspace = value.lastIndexOf(' ');
+                if (lastspace != -1) {
+                    value = value.substr(0, lastspace);
+                }
+            }
+
+            return value + (tail || ' …');
+        };
+    });
+
+    mainApp.filter('formatDate', function () {
+        return function (value) {
+            if (!value) return '';
+
+            return moment(value).format("YYYY-MM-DD HH:mm:ss");
+
+        };
+    });
+
 
     return mainApp;
 

@@ -1,6 +1,7 @@
 var mysql      = require('mysql');
 var Guid = require('guid');
 var moment = require('moment');
+var path = require('path');
 
 var connection = mysql.createConnection({
     host     : 'localhost',
@@ -39,7 +40,7 @@ module.exports = function() {
     }
 
     mod.aggregatePrevious = function(req, user, callback) {
-        var skipIds = '0';
+        var skipIds = "'0'";
         /*if (req.body.isStartLog != "true") {
             skipId = req.body.guid;
         }*/
@@ -48,13 +49,14 @@ module.exports = function() {
         var sumTime = 0;
         var i = 0;
         var lastGuid = "";
-        connection.query("SELECT guid FROM requests WHERE date_add( now(), INTERVAL -10 MINUTE) < dt GROUP BY guid", function(skipsE, skipsRows) {
+        connection.query("SELECT guid FROM requests WHERE date_add( now(), INTERVAL -1 MINUTE) < dt GROUP BY guid", function(skipsE, skipsRows) {
 
             skipsRows.forEach(function(row){
                 skipIds += ",'" + row.guid + "'";
             })
-
-            connection.query("select * from requests where dt < " + sqlDate(moment(new Date()).add(-5, 'm')) + " and guid not in (" + skipIds + ") and not exists (select id from logs where logs.session_id = requests.guid) order by id", function (err, result) {
+//dt < " + sqlDate(moment(new Date()).add(-5, 'm')) + " and
+            console.log("select * from requests where  guid not in (" + skipIds + ") and not exists (select id from logs where logs.session_id = requests.guid) order by id");
+            connection.query("select * from requests where  guid not in (" + skipIds + ") and not exists (select id from logs where logs.session_id = requests.guid) order by id", function (err, result) {
                 //console.log(result);
 
                 if (result.length == 0) {
@@ -110,13 +112,13 @@ module.exports = function() {
         };
         console.log("DATA", data);
         if (data.thumb) {
-            post.thumb_path = data.path;
+            post.thumb_path = data.path.replace(path.join(__dirname, ".."), "");
             //console.log('UPDATE shots SET thumb_path = :thumb_path WHERE code = :code');
             var query = connection.query("UPDATE shots SET thumb_path = '"+data.path+"' WHERE code = '"+data.code+"'", function(err, result) {
                 callback(post);
             });
         } else {
-            post.path = data.path;
+            post.path = data.path.replace(path.join(__dirname, ".."), "");
             var query = connection.query('INSERT INTO shots SET ?', post, function(err, result) {
                 callback(post);
             });
