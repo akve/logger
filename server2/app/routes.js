@@ -9,13 +9,13 @@ module.exports = function(app, passport,models) {
 
     app.get('/partials/:name', showClientRequest, function (req, res) {
         var name = req.params.name;
-        console.log("!");
+        //console.log("!");
         res.render('partials/' + name);
     });
 
     app.get('/partials/auth/:name', showClientRequest, function (req, res) {
         var name = req.params.name;
-        console.log("!");
+        //console.log("!");
         res.render('partials/auth/' + name);
     });
 

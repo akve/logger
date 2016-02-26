@@ -1,0 +1,11 @@
+{
+  "DB":{
+    "Host":"localhost",
+    "Database":"logger",
+    "User":"root",
+    "Password":"root"
+  },
+  "WPHost":"http://local.wordpress.dev",
+  "BaseUrl":"http://localhost:3000"
+
+}

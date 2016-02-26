@@ -1,12 +1,16 @@
 var request = require('request');
+var path = require('path');
+var nconf = require('nconf').file({
+    file: path.join( __dirname, '..', 'config', 'global.json' )
+});
 
 module.exports = function() {
 
     var mod = {};
 
-    mod.wphost = "http://local.wordpress.dev";
+    mod.wphost = nconf.get("WPHost");
 
-    mod.baseUrl = "http://localhost:3000"
+    mod.baseUrl = nconf.get("BaseUrl");
 
     mod.getAuthHeader = function(params) {
         return {'Authorization' : 'Basic '  +  new Buffer( params.username + ':' + params.password ).toString('base64')};

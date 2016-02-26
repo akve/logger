@@ -2,12 +2,15 @@ var mysql      = require('mysql');
 var Guid = require('guid');
 var moment = require('moment');
 var path = require('path');
+var nconf = require('nconf').file({
+    file: path.join( __dirname, '..', 'config', 'global.json' )
+});
 
 var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'logger'
+    host     : nconf.get('DB:Host'),
+    user     : nconf.get('DB:User'),
+    password : nconf.get('DB:Password'),
+    database : nconf.get('DB:Database')
 });
 
 module.exports = function() {
