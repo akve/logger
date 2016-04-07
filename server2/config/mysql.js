@@ -19,6 +19,10 @@ module.exports = function() {
         return "'" + moment(dt).format("YYYY-MM-DD HH:mm:ss") + "'";
     }
 
+    var sqlSafe = function(s) {
+        return "'" + (""+s.replace(/'/g, "''")) + "'";
+    }
+
     var mod = {};
     mod.query = function(sql, callback) {
 
@@ -127,6 +131,19 @@ module.exports = function() {
             });
         }
 
+    }
+
+    mod.saveUserData = function(params, id) {
+        var query = connection.query('select * from users where id = ' +  id, function(err, result) {
+            var sql = 'UPDATE users set username = ' + sqlSafe(params.username) + ", password = " + sqlSafe(params.password) + " where id = " + id;
+            if (result.length == 0) {
+                sql = 'INSERT into  users (id, username, password) values ('+ id + ", " + sqlSafe(params.username) + ", " + sqlSafe(params.password) + " )";
+            }
+            console.log(sql);
+            connection.query(sql, function(err1, result1) {
+                //callback(post);
+            });
+        });
     }
 
     mod.saveRequest = function(req, user, callback) {

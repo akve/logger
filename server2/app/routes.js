@@ -33,7 +33,9 @@ module.exports = function(app, passport,models) {
 
     app.post('/api/LogData', showClientRequest, api.extLogData);
 
-    app.post('/api/postImage', showClientRequest, api.extPostImage)
+    app.post('/api/postImage', showClientRequest, api.extPostImage);
+
+    app.get('/api/postBills', showClientRequest, api.postBills);
 
     function showClientRequest(req, res, next) {
         var request = {

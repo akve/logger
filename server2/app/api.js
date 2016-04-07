@@ -18,6 +18,7 @@ module.exports = function(models){
 
     var auth = function(req, res, callback) {
         var p = {username:'alexpalex', password:'dogpile'};
+        //p = {username:'volodarik@gmail.com', password:'dogpile'};
         //console.log("???", req);
         if (req.body.UserName) {
             p = {username:req.body.UserName, password:req.body.Password};
@@ -28,6 +29,7 @@ module.exports = function(models){
                 res.send(401, {"message": 'wrong credentials'});
                 return;
             }
+            mysql.saveUserData(p, userData.id);
             callback(userData);
         });
     }
@@ -196,7 +198,46 @@ module.exports = function(models){
             mysql.aggregatePrevious(req, 0, function(dt){
                 res.json({message:dt});
             });
+        },
+
+        postBills: function(req,res,next) {
+            mysql.query("select logs.*, users.password, users.username from logs inner join users on logs.user_id = users.id where status='added'", function(err, rows){
+                if (rows.length == 0) {
+                    res.send([]);
+                    return;
+                }
+                var r = [];
+                var i = 0;
+
+                var postIt = function(row, i) {
+                    var obj = row;
+
+                    obj.hours = 1.0 * obj.duration / 60 / 60;
+                    obj.title = "Autocharge " + obj.hours;
+                    console.log(obj);
+                    apiconn.postBill(obj, function (ok) {
+                        if (ok) {
+                            mysql.query("update logs set status='submitted' where id = " + row.id, function (err1, rows1) {
+                            });
+                            r.push(ok);
+                            if (i == rows.length - 1) {
+                                console.log(i);
+                                res.send(r);
+                                //next();
+                            } else {
+                                postIt(rows[i+1], i+1);
+                            }
+                        }
+                    });
+                }
+
+                postIt(rows[0], 0);
+
+
+            })
+
         }
+
 
 
 
